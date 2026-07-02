@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chord Tabber</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+  <link rel="shortcut icon" href="favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Chord Tabber" />
+  <link rel="manifest" href="favicon/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Space+Grotesk:wght@400;500;600&family=Tourney:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #3d2b1d;
+      --panel: #1a1d24;
+      --border: #2a2f3a;
+      --text: #e8eaed;
+      --muted: #9aa3b2;
+      --accent: #7dd3a7;
+      --error: #ff7b7b;
+      --title: #e0c443;
+      --tab-title: #e15c37;
+      --tab-title-text: #f47f4c;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg) url("wood-panel.jpg") repeat;
+      background-size: 600px 777px;
+      color: var(--text);
+      font-family: "Space Grotesk", system-ui, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 32px 20px 16px;
+    }
+
+    main {
+      width: min(760px, 100%);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 3rem;
+      font-weight: 600;
+      font-family: "Tourney", sans-serif;
+      text-align: center;
+      color: var(--title);
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: var(--tab-title-text);
+      line-height: 1;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .panel {
+      background: rgba(26, 29, 36, 0.35);
+      border: 0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    input[type="text"] {
+      flex: 1 1 220px;
+      min-width: 0;
+      background: #0d0f13;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font: 400 1rem/1.2 "Courier Prime", monospace;
+    }
+
+    input[type="text"]:focus {
+      outline: 2px solid color-mix(in srgb, var(--title) 45%, transparent);
+      border-color: var(--title);
+    }
+
+    button {
+      background: var(--tab-title);
+      color: #0d1511;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font: 600 0.95rem/1 "Space Grotesk", sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover { filter: brightness(1.05); }
+
+    .notes {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .chord-name {
+      margin: 0;
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--title);
+      font-family: "Tourney", sans-serif;
+    }
+
+    .chord-notes {
+      display: inline-block;
+      background: #0d0f13;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .voicing h3 {
+      color: var(--tab-title-text);
+      font-weight: 600;
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    .voicings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .voicings {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .voicing {
+      background: rgba(20, 23, 29, 0.35);
+      border: 0;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .voicing h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+
+    pre {
+      margin: 10px 0 0;
+      padding: 12px;
+      background: #0d0f13;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+      font: 400 0.85rem/1.4 "Courier Prime", monospace;
+      color: #d7dde7;
+      white-space: pre;
+    }
+
+    .error {
+      color: var(--error);
+      margin: 0;
+    }
+
+    .tagline {
+      margin: 32px 0 0;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    .tagline a {
+      color: var(--tab-title-text);
+      text-decoration: none;
+    }
+
+    .tagline a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Chord Tabber</h1>
+    <p class="subtitle">Turn named chords into tabs</p>
+
+    <section class="panel">
+      <form id="lookup-form">
+        <div style="width:100%">
+          <label for="chord-input">Chord names (space-separated)</label>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <input id="chord-input" type="text" value="F Fmaj7 F7 Bb" placeholder="F Fmaj7 F7 Bb" autocomplete="off" spellcheck="false">
+            <button type="submit">Tab It</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section id="results" aria-live="polite"></section>
+
+    <section class="panel" id="error-panel" role="alert" hidden>
+      <p class="error" id="error-message"></p>
+    </section>
+
+    <p class="tagline"><a href="https://sixstringcitizen.com/">A 6 String Citizen Production</a></p>
+  </main>
+
+  <script src="js/classes.js"></script>
+  <script src="js/bridge.js"></script>
+  <script>
+    const form = document.getElementById("lookup-form");
+    const input = document.getElementById("chord-input");
+    const results = document.getElementById("results");
+    const errorPanel = document.getElementById("error-panel");
+    const errorMessage = document.getElementById("error-message");
+
+    async function describeChord(chord) {
+      if (window.ChordTabberApi && typeof window.ChordTabberApi.describe === "function") {
+        return window.ChordTabberApi.describe(chord);
+      }
+      const response = await fetch("/api/describe?chord=" + encodeURIComponent(chord));
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "Lookup failed");
+      }
+      return payload;
+    }
+
+    function shortenVoicingName(name) {
+      return name
+        .replace(/\s*voicing\s*$/i, "")
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join("-");
+    }
+
+    function renderRow(payload) {
+      const row = document.createElement("section");
+      row.className = "panel chord-row";
+
+      const notesEl = document.createElement("div");
+      notesEl.className = "notes";
+      notesEl.innerHTML = "<h2 class=\"chord-name\">" + escapeHtml(payload.chordName) + "</h2><div class=\"chord-notes\">" + escapeHtml(payload.notes.join(" ")) + "</div>";
+      row.appendChild(notesEl);
+
+      const voicingsEl = document.createElement("div");
+      voicingsEl.className = "voicings";
+      payload.voicings.forEach((voicing) => {
+        const block = document.createElement("article");
+        block.className = "voicing";
+        block.innerHTML = "<h3>" + escapeHtml(shortenVoicingName(voicing.name)) + "</h3>";
+        const pre = document.createElement("pre");
+        pre.textContent = voicing.tab;
+        block.appendChild(pre);
+        voicingsEl.appendChild(block);
+      });
+      row.appendChild(voicingsEl);
+
+      return row;
+    }
+
+    function renderRowError(chord, message) {
+      const row = document.createElement("section");
+      row.className = "panel chord-row";
+      row.innerHTML = "<p class=\"error\"><strong>" + escapeHtml(chord) + "</strong>: " + escapeHtml(message) + "</p>";
+      return row;
+    }
+
+    function showError(message) {
+      results.innerHTML = "";
+      errorPanel.hidden = false;
+      errorMessage.textContent = message;
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    async function lookup(value) {
+      const chords = value.trim().split(/\s+/).filter(Boolean);
+      if (chords.length === 0) {
+        showError("Enter a chord name.");
+        return;
+      }
+      errorPanel.hidden = true;
+      results.innerHTML = "";
+      for (const chord of chords) {
+        try {
+          const payload = await describeChord(chord);
+          results.appendChild(payload.error ? renderRowError(chord, payload.error) : renderRow(payload));
+        } catch (error) {
+          results.appendChild(renderRowError(chord, error.message || String(error)));
+        }
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      lookup(input.value);
+    });
+
+    lookup(input.value);
+  </script>
+</body>
+</html>

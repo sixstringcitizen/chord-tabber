@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.sixstringcitizen</groupId>
+    <artifactId>chord-tabber-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <artifactId>chord-tabber</artifactId>
+  <name>Chord Tabber Core</name>
+  <packaging>jar</packaging>
+  <url>https://sixstringcitizen.com/chordtabber/</url>
+
+  <scm>
+    <connection>scm:git:https://github.com/sixstringcitizen/chord-tabber.git</connection>
+    <developerConnection>scm:git:https://github.com/sixstringcitizen/chord-tabber.git</developerConnection>
+    <url>https://github.com/sixstringcitizen/chord-tabber</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <!--
+        Activate with -Prelease when publishing to Maven Central (mvn -Prelease -pl chord-tabber deploy).
+        Kept out of the default build so everyday `mvn package`/`mvn test` don't require a local GPG key
+        or Central Portal credentials.
+      -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!--
+              Bakes the parent POM's inherited metadata (description, url, licenses, developers,
+              scm, resolved dependency versions) into a standalone flattened pom.xml for deploy,
+              since chord-tabber-parent itself is never published to Central and can't be
+              resolved by its metadata validator.
+            -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>flatten-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <configuration>
+              <flattenMode>oss</flattenMode>
+              <updatePomFile>true</updatePomFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>flatten</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>flatten</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>flatten-clean</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.11.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <!-- Matches a <server> entry in your own ~/.m2/settings.xml holding your Central Portal token. -->
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
