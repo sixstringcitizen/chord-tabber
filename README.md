@@ -2,6 +2,8 @@
 
 Maven multi-module Java library that parses chord symbols, builds chord tones, generates playable guitar voicings, and renders ASCII tabs.
 
+Live demo: [sixstringcitizen.com/chordtabber](https://sixstringcitizen.com/chordtabber/) · Maven Central: [com.sixstringcitizen:chord-tabber](https://central.sonatype.com/artifact/com.sixstringcitizen/chord-tabber)
+
 ## Modules
 
 | Module | Purpose |
@@ -47,7 +49,7 @@ python3 -m http.server 8080
 After `mvn package`:
 
 ```bash
-java -jar chord-tabber-cli/target/chord-tabber-cli-0.1.0-SNAPSHOT.jar Cmaj7 Am G7
+java -jar chord-tabber-cli/target/chord-tabber-cli-0.1.0.jar Cmaj7 Am G7
 ```
 
 ## Local web testing (Java API server)
@@ -76,6 +78,7 @@ After `mvn -Pbrowser package`, deploy `index.html`, `js/bridge.js`, and the gene
 | Page shows fetch errors | Run **`mvn -Pbrowser package`** so `js/classes.js` exists, then serve over HTTP (not `file://`) |
 | `mvn -pl chord-tabber-server -am exec:java` fails with `mainClass ... missing or invalid` | `-am` pulls the parent POM into the reactor and Maven tries `exec:java` on it too. Run `mvn -pl chord-tabber-server -am install -DskipTests` first, then `mvn -pl chord-tabber-server exec:java` (no `-am`) |
 | `./run-server.sh` fails with `Operation not permitted` | macOS is blocking your terminal app from accessing this folder. Grant it access under **System Settings → Privacy & Security → Files and Folders (or Full Disk Access)**, then restart the terminal app |
+| `mvn -Pbrowser package` fails with `Unsupported class file major version ...` | TeaVM can't parse class files from newer JDKs (e.g. JDK 26). Install an older JDK (`brew install openjdk@21`) and point `JAVA_HOME` at it for this build, e.g. `JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -Pbrowser package` |
 
 ## API
 
@@ -88,12 +91,14 @@ result.voicings();  // up to 3 ranked fingerings
 result.tabs();      // ASCII tab per voicing
 ```
 
-## Maven coordinates (snapshot)
+## Maven coordinates
+
+Published on [Maven Central](https://central.sonatype.com/artifact/com.sixstringcitizen/chord-tabber):
 
 ```xml
 <groupId>com.sixstringcitizen</groupId>
 <artifactId>chord-tabber</artifactId>
-<version>0.1.0-SNAPSHOT</version>
+<version>0.1.0</version>
 ```
 
 ## License

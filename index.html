@@ -42,6 +42,7 @@
       display: flex;
       justify-content: center;
       padding: 32px 20px 16px;
+      zoom: 1.25;
     }
 
     main {
@@ -193,19 +194,60 @@
       margin: 0;
     }
 
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 64px;
+    }
+
     .tagline {
-      margin: 32px 0 0;
-      text-align: center;
-      font-size: 0.8rem;
+      margin: 0;
+      font-size: 0.7rem;
     }
 
     .tagline a {
-      color: var(--tab-title-text);
+      color: var(--text);
       text-decoration: none;
     }
 
     .tagline a:hover {
       text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      text-decoration: underline;
+    }
+
+    .footer-links a + a {
+      margin-left: 16px;
+    }
+
+    .footer-links a:hover {
+      filter: brightness(1.15);
+    }
+
+    .external-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    .footer-icon {
+      height: 16px;
+      width: auto;
     }
 
   </style>
@@ -233,7 +275,13 @@
       <p class="error" id="error-message"></p>
     </section>
 
-    <p class="tagline"><a href="https://sixstringcitizen.com/">A 6 String Citizen Production</a></p>
+    <div class="footer">
+      <p class="tagline"><a href="https://sixstringcitizen.com/">A 6 String Citizen Production</a></p>
+      <div class="footer-links">
+        <a href="https://github.com/sixstringcitizen/chord-tabber"><img class="footer-icon" src="gh-logo.svg" alt="">GitHub<svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+        <a href="https://central.sonatype.com/artifact/com.sixstringcitizen/chord-tabber"><img class="footer-icon" src="hexagon-logo.svg" alt="">Maven Central<svg class="external-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+      </div>
+    </div>
   </main>
 
   <script src="js/classes.js"></script>
